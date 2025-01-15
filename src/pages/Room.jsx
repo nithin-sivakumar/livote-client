@@ -12,6 +12,7 @@ const Room = () => {
   const [options, setOptions] = useState([]);
   const [question, setQuestion] = useState("");
   const [duration, setDuration] = useState(0);
+  const [voted, setVoted] = useState(false);
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -70,6 +71,7 @@ const Room = () => {
       name: location.state.name,
     });
     if (duration !== 0) {
+      setVoted(true);
       socket.emit("vote", {
         selected,
         roomId: location.state.roomId,
@@ -142,12 +144,36 @@ const Room = () => {
               ))}
             </div>
           </div>
-          <button
-            onClick={handleSubmit}
-            className={`bg-gradient-to-l from-purple-500 to-violet-700 px-8 py-3 mt-0 rounded-full w-[12rem] text-white hover:scale-105 transition-all duration-200 active:scale-95`}
-          >
-            {duration === 0 ? "View Results" : "Submit"}
-          </button>
+          {duration > 0 && (
+            <button
+              onClick={handleSubmit}
+              className={`bg-gradient-to-l from-purple-500 to-violet-700 px-8 py-3 mt-0 rounded-full w-[18rem] text-white hover:scale-105 transition-all duration-200 active:scale-95`}
+            >
+              {voted ? (
+                <div className="flex items-center justify-center gap-2">
+                  <span>Waiting for others</span>
+                  <SyncLoader
+                    style={{ margin: "10px" }}
+                    color={"#fff"}
+                    loading={voted}
+                    size={10}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </div>
+              ) : (
+                "Submit"
+              )}
+            </button>
+          )}
+          {duration === 0 && (
+            <button
+              onClick={handleSubmit}
+              className={`bg-gradient-to-l from-purple-500 to-violet-700 px-8 py-3 mt-0 rounded-full w-[12rem] text-white hover:scale-105 transition-all duration-200 active:scale-95`}
+            >
+              View Results
+            </button>
+          )}
         </>
       )}
     </div>
