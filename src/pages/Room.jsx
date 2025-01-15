@@ -48,14 +48,6 @@ const Room = () => {
       setDuration(duration);
     });
 
-    socket.on("pollEnd", () => {
-      toast("Poll has ended!", {
-        type: "info",
-        transition: Bounce,
-        autoClose: 1500,
-      });
-    });
-
     return () => {
       socket.disconnect();
     };
